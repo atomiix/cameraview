@@ -32,7 +32,10 @@ class TextureViewPreview extends PreviewImpl {
 
     private int mDisplayOrientation;
 
+    private ViewGroup mParent;
+
     TextureViewPreview(Context context, ViewGroup parent) {
+        mParent = parent;
         final View view = View.inflate(context, R.layout.texture_view, parent);
         mTextureView = (TextureView) view.findViewById(R.id.texture_view);
         mTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
@@ -107,9 +110,9 @@ class TextureViewPreview extends PreviewImpl {
      */
     void configureTransform() {
         Matrix matrix = new Matrix();
+        final int width = getWidth();
+        final int height = getHeight();
         if (mDisplayOrientation % 180 == 90) {
-            final int width = getWidth();
-            final int height = getHeight();
             // Rotate the camera preview when the screen is landscape.
             matrix.setPolyToPoly(
                     new float[]{
@@ -135,8 +138,22 @@ class TextureViewPreview extends PreviewImpl {
                             }, 0,
                     4);
         } else if (mDisplayOrientation == 180) {
-            matrix.postRotate(180, getWidth() / 2, getHeight() / 2);
+            matrix.postRotate(180, width / 2, height / 2);
         }
+
+        int translateX = 0;
+        int translateY = 0;
+
+        if (mParent.getWidth() < width) {
+            translateX = -(width - mParent.getWidth()) / 2;
+        }
+        if (mParent.getHeight() < height) {
+            translateY = -(height - mParent.getHeight()) / 2;
+        }
+        if (translateX != 0 || translateY != 0) {
+            matrix.postTranslate(translateX, translateY);
+        }
+
         mTextureView.setTransform(matrix);
     }
 

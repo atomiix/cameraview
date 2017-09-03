@@ -28,7 +28,10 @@ class SurfaceViewPreview extends PreviewImpl {
 
     final SurfaceView mSurfaceView;
 
+    ViewGroup mParent;
+
     SurfaceViewPreview(Context context, ViewGroup parent) {
+        mParent = parent;
         final View view = View.inflate(context, R.layout.surface_view, parent);
         mSurfaceView = (SurfaceView) view.findViewById(R.id.surface_view);
         final SurfaceHolder holder = mSurfaceView.getHolder();
@@ -43,6 +46,7 @@ class SurfaceViewPreview extends PreviewImpl {
             public void surfaceChanged(SurfaceHolder h, int format, int width, int height) {
                 setSize(width, height);
                 if (!ViewCompat.isInLayout(mSurfaceView)) {
+                    translateIfNeeded();
                     dispatchSurfaceChanged();
                 }
             }
@@ -52,6 +56,15 @@ class SurfaceViewPreview extends PreviewImpl {
                 setSize(0, 0);
             }
         });
+    }
+
+    void translateIfNeeded() {
+        if (mParent.getWidth() < getWidth()) {
+            mSurfaceView.setTranslationX(-(getWidth() - mParent.getWidth()) / 2);
+        }
+        if (mParent.getHeight() < getHeight()) {
+            mSurfaceView.setTranslationX(-(getHeight() - mParent.getHeight()) / 2);
+        }
     }
 
     @Override
