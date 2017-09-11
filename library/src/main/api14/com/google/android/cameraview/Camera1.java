@@ -69,6 +69,8 @@ class Camera1 extends CameraViewImpl {
 
     private int mFlash;
 
+    private float mResolution;
+
     private int mDisplayOrientation;
 
     Camera1(Callback callback, PreviewImpl preview) {
@@ -218,6 +220,22 @@ class Camera1 extends CameraViewImpl {
     }
 
     @Override
+    void setResolution(float resolution) {
+        if (resolution == mResolution) {
+            return;
+        }
+        mResolution = resolution;
+        if (isCameraOpened()) {
+            adjustCameraParameters();
+        }
+    }
+
+    @Override
+    float getResolution() {
+        return mResolution;
+    }
+
+    @Override
     void takePicture() {
         if (!isCameraOpened()) {
             throw new IllegalStateException(
@@ -330,7 +348,7 @@ class Camera1 extends CameraViewImpl {
 
         // Always re-apply camera parameters
         // Largest picture size in this ratio
-        final Size pictureSize = mPictureSizes.sizes(mAspectRatio).last();
+        final Size pictureSize = choosePictureSize();
         if (mShowingPreview) {
             mCamera.stopPreview();
         }
@@ -370,6 +388,20 @@ class Camera1 extends CameraViewImpl {
             result = size;
         }
         return result;
+    }
+
+    private Size choosePictureSize() {
+        if (mResolution == Constants.RESOLUTION_LOWEST) {
+            return mPictureSizes.sizes(mAspectRatio).first();
+        } else if (mResolution != Constants.RESOLUTION_HIGHEST) {
+            SortedSet<Size> candidates = mPictureSizes.sizes(mAspectRatio);
+            for (Size size : candidates) {
+                if (size.getWidth() * size.getHeight() >= mResolution) {
+                    return size;
+                }
+            }
+        }
+        return mPictureSizes.sizes(mAspectRatio).last();
     }
 
     private void releaseCamera() {

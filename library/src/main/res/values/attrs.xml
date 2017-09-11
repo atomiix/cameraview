@@ -54,5 +54,12 @@
             -->
             <enum name="redEye" value="4"/>
         </attr>
+        <!-- The resolution -->
+        <attr name="resolutionMegapixel" format="float">
+
+            <enum name="LOWEST" value="-1" />
+
+            <enum name="HIGHEST" value="0" />
+        </attr>
     </declare-styleable>
 </resources>

@@ -32,4 +32,7 @@ interface Constants {
 
     int LANDSCAPE_90 = 90;
     int LANDSCAPE_270 = 270;
+
+    int RESOLUTION_LOWEST = -1;
+    int RESOLUTION_HIGHEST = 0;
 }

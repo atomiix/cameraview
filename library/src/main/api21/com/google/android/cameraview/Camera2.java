@@ -194,6 +194,8 @@ class Camera2 extends CameraViewImpl {
 
     private int mFlash;
 
+    private float mResolution;
+
     private int mDisplayOrientation;
 
     Camera2(Callback callback, PreviewImpl preview, Context context) {
@@ -333,6 +335,27 @@ class Camera2 extends CameraViewImpl {
     }
 
     @Override
+    void setResolution(float resolution) {
+        if (resolution == mResolution) {
+            return;
+        }
+        mResolution = resolution;
+        if (isCameraOpened()) {
+            prepareImageReader();
+            if (mCaptureSession != null) {
+                mCaptureSession.close();
+                mCaptureSession = null;
+                startCaptureSession();
+            }
+        }
+    }
+
+    @Override
+    float getResolution() {
+        return mResolution;
+    }
+
+    @Override
     void takePicture() {
         if (mAutoFocus) {
             lockFocus();
@@ -447,8 +470,8 @@ class Camera2 extends CameraViewImpl {
         if (mImageReader != null) {
             mImageReader.close();
         }
-        Size largest = mPictureSizes.sizes(mAspectRatio).last();
-        mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
+        Size size = choosePictureSize();
+        mImageReader = ImageReader.newInstance(size.getWidth(), size.getHeight(),
                 ImageFormat.JPEG, /* maxImages */ 2);
         mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, null);
     }
@@ -513,6 +536,25 @@ class Camera2 extends CameraViewImpl {
         }
         // If no size is big enough, pick the largest one.
         return candidates.last();
+    }
+
+    /**
+     * Chooses the optimal picture size based on {@link #mResolution}.
+     *
+     * @return The picked size for camera picture.
+     */
+    private Size choosePictureSize() {
+        if (mResolution == Constants.RESOLUTION_LOWEST) {
+            return mPictureSizes.sizes(mAspectRatio).first();
+        } else if (mResolution != Constants.RESOLUTION_HIGHEST) {
+            SortedSet<Size> candidates = mPictureSizes.sizes(mAspectRatio);
+            for (Size size : candidates) {
+                if (size.getWidth() * size.getHeight() >= mResolution) {
+                    return size;
+                }
+            }
+        }
+        return mPictureSizes.sizes(mAspectRatio).last();
     }
 
     /**

@@ -65,6 +65,10 @@ abstract class CameraViewImpl {
 
     abstract int getFlash();
 
+    abstract void setResolution(float resolution);
+
+    abstract float getResolution();
+
     abstract void takePicture();
 
     abstract void setDisplayOrientation(int displayOrientation);
