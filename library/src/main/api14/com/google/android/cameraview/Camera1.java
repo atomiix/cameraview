@@ -496,8 +496,11 @@ class Camera1 extends CameraViewImpl {
                 mFlash = flash;
                 return true;
             }
+            if (modes == null) {
+                return false;
+            }
             String currentMode = FLASH_MODES.get(mFlash);
-            if (modes == null || !modes.contains(currentMode)) {
+            if (!modes.contains(currentMode)) {
                 mCameraParameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                 mFlash = Constants.FLASH_OFF;
                 return true;
