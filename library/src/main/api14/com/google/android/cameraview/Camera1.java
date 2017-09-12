@@ -134,6 +134,27 @@ class Camera1 extends CameraViewImpl {
     }
 
     @Override
+    int getCameraType() {
+        int type = Constants.FACING_NO;
+        int numberOfCameras = Camera.getNumberOfCameras();
+        boolean hasFront = false;
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(i, info);
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                hasFront = true;
+                break;
+            }
+        }
+        if (hasFront) {
+            type = numberOfCameras > 1 ? Constants.FACING_BOTH : Constants.FACING_FRONT;
+        } else if (numberOfCameras > 0) {
+            type = Constants.FACING_BACK;
+        }
+        return type;
+    }
+
+    @Override
     void setFacing(int facing) {
         if (mFacing == facing) {
             return;

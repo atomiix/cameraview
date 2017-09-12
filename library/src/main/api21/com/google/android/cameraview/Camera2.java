@@ -242,6 +242,40 @@ class Camera2 extends CameraViewImpl {
     }
 
     @Override
+    int getCameraType() {
+        int type = Constants.FACING_NO;
+        try {
+            final String[] ids = mCameraManager.getCameraIdList();
+            boolean hasFront = false;
+            for (String id : ids) {
+                CameraCharacteristics characteristics = mCameraManager.getCameraCharacteristics(id);
+                Integer level = characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
+                if (level == null || level == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY) {
+                    continue;
+                }
+                Integer internal = characteristics.get(CameraCharacteristics.LENS_FACING);
+                if (internal == null) {
+                    throw new NullPointerException("Unexpected state: LENS_FACING null");
+                }
+                if (internal == CameraCharacteristics.LENS_FACING_FRONT) {
+                    hasFront = true;
+                    break;
+                }
+            }
+            if (hasFront) {
+                type = ids.length > 1 ? Constants.FACING_BOTH : Constants.FACING_FRONT;
+            } else if (ids.length > 0){
+                type = Constants.FACING_BACK;
+            }
+
+        } catch (CameraAccessException e) {
+
+        }
+
+        return type;
+    }
+
+    @Override
     void setFacing(int facing) {
         if (mFacing == facing) {
             return;

@@ -38,11 +38,15 @@ import java.util.Set;
 
 public class CameraView extends FrameLayout {
 
+    public static final int FACING_NO = Constants.FACING_NO;
+
     /** The camera device faces the opposite direction as the device's screen. */
     public static final int FACING_BACK = Constants.FACING_BACK;
 
     /** The camera device faces the same direction as the device's screen. */
     public static final int FACING_FRONT = Constants.FACING_FRONT;
+
+    public static final int FACING_BOTH = Constants.FACING_BOTH;
 
     /** Direction the camera faces relative to device screen. */
     @IntDef({FACING_BACK, FACING_FRONT})
@@ -274,6 +278,14 @@ public class CameraView extends FrameLayout {
      */
     public boolean isCameraOpened() {
         return mImpl.isCameraOpened();
+    }
+
+
+    /**
+     * @return the number of camera
+     */
+    public int getCameraType() {
+        return mImpl.getCameraType();
     }
 
     /**
