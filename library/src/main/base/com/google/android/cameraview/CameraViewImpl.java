@@ -67,6 +67,8 @@ abstract class CameraViewImpl {
 
     abstract int getFlash();
 
+    abstract boolean hasFlash();
+
     abstract void setResolution(float resolution);
 
     abstract float getResolution();

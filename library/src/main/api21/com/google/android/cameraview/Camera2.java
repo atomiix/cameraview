@@ -369,6 +369,11 @@ class Camera2 extends CameraViewImpl {
     }
 
     @Override
+    boolean hasFlash() {
+        return mCameraCharacteristics != null && mCameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+    }
+
+    @Override
     void setResolution(float resolution) {
         if (resolution == mResolution) {
             return;

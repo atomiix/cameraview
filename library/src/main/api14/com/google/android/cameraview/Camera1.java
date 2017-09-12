@@ -241,6 +241,11 @@ class Camera1 extends CameraViewImpl {
     }
 
     @Override
+    boolean hasFlash() {
+        return isCameraOpened() && mCameraParameters.getSupportedFlashModes() != null;
+    }
+
+    @Override
     void setResolution(float resolution) {
         if (resolution == mResolution) {
             return;

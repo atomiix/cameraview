@@ -419,6 +419,10 @@ public class CameraView extends FrameLayout {
         return mImpl.getFlash();
     }
 
+    public boolean hasFlash() {
+        return mImpl.hasFlash();
+    }
+
     public void setResolution(float quality) {
         mImpl.setResolution(quality);
     }
