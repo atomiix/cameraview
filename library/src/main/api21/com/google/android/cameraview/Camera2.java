@@ -249,10 +249,6 @@ class Camera2 extends CameraViewImpl {
             boolean hasFront = false;
             for (String id : ids) {
                 CameraCharacteristics characteristics = mCameraManager.getCameraCharacteristics(id);
-                Integer level = characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
-                if (level == null || level == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY) {
-                    continue;
-                }
                 Integer internal = characteristics.get(CameraCharacteristics.LENS_FACING);
                 if (internal == null) {
                     throw new NullPointerException("Unexpected state: LENS_FACING null");
