@@ -417,6 +417,18 @@ public class CameraView extends FrameLayout {
         return mImpl.hasFlash();
     }
 
+    public void setZoom(int zoom) {
+        mImpl.setZoom(zoom);
+    }
+
+    public int getZoom() {
+        return mImpl.getZoom();
+    }
+
+    public int getMaxZoom() {
+        return mImpl.getMaxZoom();
+    }
+
     public void setResolution(float quality) {
         mImpl.setResolution(quality);
     }

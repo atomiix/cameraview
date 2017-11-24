@@ -369,6 +369,12 @@ class Camera2 extends CameraViewImpl {
         return mCameraCharacteristics != null && mCameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
     }
 
+    void setZoom(int zoom) {}
+
+    int getZoom() { return 0; }
+
+    int getMaxZoom() { return 0; }
+
     @Override
     void setResolution(float resolution) {
         if (resolution == mResolution) {

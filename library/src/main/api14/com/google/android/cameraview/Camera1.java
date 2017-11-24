@@ -69,6 +69,8 @@ class Camera1 extends CameraViewImpl {
 
     private int mFlash;
 
+    private int mZoom;
+
     private float mResolution;
 
     private int mDisplayOrientation;
@@ -245,6 +247,23 @@ class Camera1 extends CameraViewImpl {
         return isCameraOpened() && mCameraParameters.getSupportedFlashModes() != null;
     }
 
+    void setZoom(int zoom) {
+        if (zoom == mZoom) {
+            return;
+        }
+        if (setZoomInternal(zoom)) {
+            mCamera.setParameters(mCameraParameters);
+        }
+    }
+
+    int getZoom() {
+        return mZoom;
+    }
+
+    int getMaxZoom() {
+        return (isCameraOpened() && mCameraParameters.isZoomSupported()) ? mCameraParameters.getMaxZoom() : 0;
+    }
+
     @Override
     void setResolution(float resolution) {
         if (resolution == mResolution) {
@@ -348,6 +367,7 @@ class Camera1 extends CameraViewImpl {
         if (mAspectRatio == null) {
             mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
         }
+        mZoom = 0;
         adjustCameraParameters();
         mCamera.setDisplayOrientation(calcDisplayOrientation(mDisplayOrientation));
         mCallback.onCameraOpened();
@@ -383,6 +403,7 @@ class Camera1 extends CameraViewImpl {
         mCameraParameters.setRotation(calcCameraRotation(mDisplayOrientation));
         setAutoFocusInternal(mAutoFocus);
         setFlashInternal(mFlash);
+        setZoomInternal(mZoom);
         mCamera.setParameters(mCameraParameters);
         if (mShowingPreview) {
             mCamera.startPreview();
@@ -534,6 +555,22 @@ class Camera1 extends CameraViewImpl {
             return false;
         } else {
             mFlash = flash;
+            return false;
+        }
+    }
+
+    /**
+     * @return {@code true} if {@link #mCameraParameters} was modified.
+     */
+    private boolean setZoomInternal(int zoom) {
+        if (isCameraOpened() && mCameraParameters.isZoomSupported()) {
+            int maxZoom = mCameraParameters.getMaxZoom();
+            zoom = Math.max(0, Math.min(maxZoom, zoom));
+            mCameraParameters.setZoom(zoom);
+            mZoom = zoom;
+            return true;
+        } else {
+            mZoom = zoom;
             return false;
         }
     }
