@@ -19,6 +19,7 @@ package com.google.android.cameraview;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -391,6 +392,10 @@ public class CameraView extends FrameLayout {
      */
     public boolean getAutoFocus() {
         return mImpl.getAutoFocus();
+    }
+
+    public void setFocusArea(Rect area) {
+        mImpl.setFocusArea(area);
     }
 
     /**

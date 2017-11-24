@@ -16,6 +16,7 @@
 
 package com.google.android.cameraview;
 
+import android.graphics.Rect;
 import android.view.View;
 
 import java.util.Set;
@@ -62,6 +63,8 @@ abstract class CameraViewImpl {
     abstract void setAutoFocus(boolean autoFocus);
 
     abstract boolean getAutoFocus();
+
+    abstract void setFocusArea(Rect area);
 
     abstract void setFlash(int flash);
 

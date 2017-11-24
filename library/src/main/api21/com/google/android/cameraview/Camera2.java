@@ -19,6 +19,7 @@ package com.google.android.cameraview;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -338,6 +339,9 @@ class Camera2 extends CameraViewImpl {
     boolean getAutoFocus() {
         return mAutoFocus;
     }
+
+    @Override
+    void setFocusArea(Rect area) {}
 
     @Override
     void setFlash(int flash) {

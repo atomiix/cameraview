@@ -17,6 +17,7 @@
 package com.google.android.cameraview;
 
 import android.annotation.SuppressLint;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
@@ -24,6 +25,7 @@ import android.support.v4.util.SparseArrayCompat;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -64,6 +66,8 @@ class Camera1 extends CameraViewImpl {
     private boolean mShowingPreview;
 
     private boolean mAutoFocus;
+
+    private Rect mFocusArea;
 
     private int mFacing;
 
@@ -225,6 +229,16 @@ class Camera1 extends CameraViewImpl {
         }
         String focusMode = mCameraParameters.getFocusMode();
         return focusMode != null && focusMode.contains("continuous");
+    }
+
+    void setFocusArea(Rect area) {
+        if (area == mFocusArea) {
+            return;
+        }
+        if (setFocusAreaInternal(area)) {
+            setAutoFocus(true);
+            mCamera.setParameters(mCameraParameters);
+        }
     }
 
     @Override
@@ -524,6 +538,21 @@ class Camera1 extends CameraViewImpl {
                 mCameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY);
             } else {
                 mCameraParameters.setFocusMode(modes.get(0));
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean setFocusAreaInternal(Rect area) {
+        mFocusArea = area;
+        if (mCameraParameters.getMaxNumFocusAreas() > 0 && isCameraOpened()) {
+            List<Camera.Area> areaList = new ArrayList<>();
+            areaList.add(new Camera.Area(area, 1000));
+            mCameraParameters.setFocusAreas(areaList);
+            if (mCameraParameters.getMaxNumMeteringAreas() > 0) {
+                mCameraParameters.setMeteringAreas(areaList);
             }
             return true;
         } else {
