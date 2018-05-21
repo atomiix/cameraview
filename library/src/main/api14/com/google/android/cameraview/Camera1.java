@@ -547,7 +547,7 @@ class Camera1 extends CameraViewImpl {
 
     private boolean setFocusAreaInternal(Rect area) {
         mFocusArea = area;
-        if (mCameraParameters.getMaxNumFocusAreas() > 0 && isCameraOpened()) {
+        if (mCameraParameters != null && mCameraParameters.getMaxNumFocusAreas() > 0 && isCameraOpened()) {
             List<Camera.Area> areaList = new ArrayList<>();
             areaList.add(new Camera.Area(area, 1000));
             mCameraParameters.setFocusAreas(areaList);
